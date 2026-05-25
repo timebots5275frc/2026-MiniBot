@@ -46,14 +46,54 @@ public class TankDriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * input a value 0.0 to 1.0 
-   * 0.0 0% Current
-   * 1.0 100% Current
-   * @param left 
-   * @param right
+   *  
+   * @param xSpeed 
+   * meters per second
+   * @param zRotation
+   * degrees per second, positive is Counter Clockwise
    */
-  public void drive(double left, double right) {
-    
+    public void arcadeDrive(double xSpeed, double zRotation) {
+
+      xSpeed = Math.min(xSpeed, Constants.DriveConstants.MAX_X_SPEED);
+      xSpeed = Math.max(xSpeed, -Constants.DriveConstants.MAX_X_SPEED);
+
+      zRotation = Math.min(zRotation, Constants.DriveConstants.MAX_Z_ROTATIONS);
+      zRotation = Math.max(zRotation, -Constants.DriveConstants.MAX_Z_ROTATIONS);
+
+      double zRotationMetersPerSecond = Math.toRadians(zRotation) * (Constants.DriveConstants.TRACK_WIDTH / 2);
+
+      double leftSpeed = xSpeed - zRotationMetersPerSecond;
+      double rightSpeed = xSpeed + zRotationMetersPerSecond;
+
+      double greaterInput = Math.max(Math.abs(xSpeed), Math.abs(zRotationMetersPerSecond));
+      double lesserInput = Math.min(Math.abs(xSpeed), Math.abs(zRotationMetersPerSecond));
+      if (greaterInput == 0.0) {
+        leftSpeed = 0;
+        rightSpeed = 0;
+      } else {
+        double saturatedInput = (greaterInput + lesserInput) / greaterInput;
+        leftSpeed /= saturatedInput;
+        rightSpeed /= saturatedInput;
+      }
+      
+      wheelDrive(leftSpeed, rightSpeed);
+    }
+
+   /**
+ * meters per second
+ */
+  private void wheelDrive(double leftSpeed, double rightSpeed) {
+      //60 - converts seconds to minutes;
+      //(Math.PI * Constants.DriveConstants.WHEEL_DIAMETER)) gets the wheel circumfrence, otherwise meters per rotation
+      //divide by the gear ratio to convert to wheel rotations
+      
+      double conversionFactor = (60 / (Math.PI * Constants.DriveConstants.WHEEL_DIAMETER)) / Constants.DriveConstants.GEAR_RATIO;
+
+      double leftRPM = leftSpeed * conversionFactor;
+      double rightRPM = rightSpeed * conversionFactor;
+
+      leftMotorController.setReference(leftRPM, ControlType.kVelocity);
+      righMotorController.setReference(rightRPM, ControlType.kVelocity);
   }
 
   @Override

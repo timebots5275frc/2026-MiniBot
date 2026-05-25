@@ -31,5 +31,16 @@ public final class Constants {
 
     public static final int DRIVE_FREE_LIMIT = 35; 
     public static final int DRIVE_STALL_LIMIT = 60; 
+
+
+    public static final double MAX_X_SPEED = 2; // meters per second
+    public static final double MAX_Z_ROTATIONS = 360; // degrees per second
+
+
+    public static final double TRACK_WIDTH = 0; //TODO: the distance between the middle of left and right wheel
+    public static final double GEAR_RATIO = 10.71; //TODO: how many rotations of the motor rotate the wheel
+
+
+    public static final double WHEEL_DIAMETER = 0;
   }
 }
