@@ -57,8 +57,8 @@ public class TankDriveSubsystem extends SubsystemBase {
       xSpeed = Math.min(xSpeed, Constants.DriveConstants.MAX_X_SPEED);
       xSpeed = Math.max(xSpeed, -Constants.DriveConstants.MAX_X_SPEED);
 
-      zRotation = Math.min(zRotation, Constants.DriveConstants.MAX_Z_ROTATIONS);
-      zRotation = Math.max(zRotation, -Constants.DriveConstants.MAX_Z_ROTATIONS);
+      zRotation = Math.min(zRotation, Constants.DriveConstants.MAX_Z_ROTATION);
+      zRotation = Math.max(zRotation, -Constants.DriveConstants.MAX_Z_ROTATION);
 
       double zRotationMetersPerSecond = Math.toRadians(zRotation) * (Constants.DriveConstants.TRACK_WIDTH / 2);
 
