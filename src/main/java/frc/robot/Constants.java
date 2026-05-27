@@ -27,7 +27,8 @@ public final class Constants {
 
     public static final int LEFT_MOTOR_ID = 2; //TODO: set in phoenix tuner
     public static final int RIGHT_MOTOR_ID = 3; //TODO: same as above
-
+    public static final int LEFT_FOLLOWER_ID = 4;
+    public static final int RIGHT_FOLLOWER_ID = 5;
 
     public static final int DRIVE_FREE_LIMIT = 35; 
     public static final int DRIVE_STALL_LIMIT = 60; 
@@ -40,6 +41,7 @@ public final class Constants {
     public static final double TRACK_WIDTH = 0; //TODO: the distance between the middle of left and right wheel
     public static final double GEAR_RATIO = 10.71; //TODO: how many rotations of the motor rotate the wheel
     public static final double WHEEL_DIAMETER = 0; //TODO:
+    
   }
 
   public static class ControllerConstants {

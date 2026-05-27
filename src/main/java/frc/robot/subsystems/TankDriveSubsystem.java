@@ -8,19 +8,25 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class TankDriveSubsystem extends SubsystemBase {
 
-    private SparkMax leftMotor;
-    private SparkMax rightMotor;
+    private SparkMax leftLeaderMotor;
+    private SparkMax rightLeaderMotor;
+
+    private SparkMax leftFollowerMotor;
+    private SparkMax rightFollowerMotor;
 
     private SparkClosedLoopController leftMotorController;
-    private SparkClosedLoopController righMotorController;
+    private SparkClosedLoopController rightMotorController;
 
     
 
@@ -35,13 +41,24 @@ public class TankDriveSubsystem extends SubsystemBase {
     Constants.DriveConstants.DRIVE_PID.setStallLimit(Constants.DriveConstants.DRIVE_STALL_LIMIT);
     
 
-    leftMotor = new SparkMax(Constants.DriveConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
-    Constants.DriveConstants.DRIVE_PID.setSparkMaxPID(leftMotor,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-    leftMotorController = leftMotor.getClosedLoopController();  
+    leftLeaderMotor = new SparkMax(Constants.DriveConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
+    Constants.DriveConstants.DRIVE_PID.setSparkMaxPID(leftLeaderMotor,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+    leftMotorController = leftLeaderMotor.getClosedLoopController();  
 
-    rightMotor = new SparkMax(Constants.DriveConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
-    Constants.DriveConstants.DRIVE_PID.setSparkMaxPID(rightMotor,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-    righMotorController = rightMotor.getClosedLoopController(); 
+    rightLeaderMotor = new SparkMax(Constants.DriveConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
+    Constants.DriveConstants.DRIVE_PID.setSparkMaxPID(rightLeaderMotor,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+    rightMotorController = rightLeaderMotor.getClosedLoopController(); 
+
+    //Followers
+    leftFollowerMotor = new SparkMax(Constants.DriveConstants.LEFT_FOLLOWER_ID, SparkLowLevel.MotorType.kBrushless);
+    SparkMaxConfig config1 = Constants.DriveConstants.DRIVE_PID.setSparkMaxPID(leftLeaderMotor, IdleMode.kBrake);
+    config1.follow(leftLeaderMotor, false); 
+    leftFollowerMotor.configure(config1, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    rightFollowerMotor = new SparkMax(Constants.DriveConstants.RIGHT_FOLLOWER_ID, SparkLowLevel.MotorType.kBrushless);
+    SparkMaxConfig config2 = Constants.DriveConstants.DRIVE_PID.setSparkMaxPID(rightLeaderMotor, IdleMode.kBrake);
+    config2.follow(rightLeaderMotor, false); 
+    rightFollowerMotor.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
   }
 
@@ -93,7 +110,7 @@ public class TankDriveSubsystem extends SubsystemBase {
       double rightRPM = rightSpeed * conversionFactor;
 
       leftMotorController.setReference(leftRPM * Constants.DriveConstants.FOWARD, ControlType.kVelocity);
-      righMotorController.setReference(rightRPM * Constants.DriveConstants.FOWARD, ControlType.kVelocity);
+      rightMotorController.setReference(rightRPM * Constants.DriveConstants.FOWARD, ControlType.kVelocity);
   }
 
   @Override
