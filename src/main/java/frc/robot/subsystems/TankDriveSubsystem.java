@@ -104,7 +104,7 @@ public class TankDriveSubsystem extends SubsystemBase {
       //(Math.PI * Constants.DriveConstants.WHEEL_DIAMETER)) gets the wheel circumfrence, otherwise meters per rotation
       //divide by the gear ratio to convert to wheel rotations
 
-      double conversionFactor = (60 / (Math.PI * Constants.DriveConstants.WHEEL_DIAMETER)) / Constants.DriveConstants.GEAR_RATIO;
+      double conversionFactor = (60 / (Math.PI * Constants.DriveConstants.WHEEL_DIAMETER)) * Constants.DriveConstants.GEAR_RATIO;
 
       double leftRPM = leftSpeed * conversionFactor;
       double rightRPM = rightSpeed * conversionFactor;

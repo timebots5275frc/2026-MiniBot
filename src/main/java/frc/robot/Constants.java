@@ -35,12 +35,12 @@ public final class Constants {
 
 
     public static final double MAX_X_SPEED = 2; // meters per second
-    public static final double MAX_Z_ROTATION = 360; // degrees per second
+    public static final double MAX_Z_ROTATION = 30; // degrees per second
 
 
-    public static final double TRACK_WIDTH = 0; //TODO: the distance between the middle of left and right wheel
+    public static final double TRACK_WIDTH = 16 * MathConstants.INCH_TO_METER; //TODO: the distance between the middle of left and right wheel
     public static final double GEAR_RATIO = 10.71; //TODO: how many rotations of the motor rotate the wheel
-    public static final double WHEEL_DIAMETER = 0; //TODO:
+    public static final double WHEEL_DIAMETER = 4 * MathConstants.INCH_TO_METER; //TODO:
     
   }
 
@@ -49,5 +49,9 @@ public final class Constants {
     public static final double DEADZONE_DRIVE = 0.05;
     public static final double DEADZONE_STEER = 0.05;
 
+  }
+
+   public static final class MathConstants {
+    public static final double INCH_TO_METER = 0.0254;
   }
 }
