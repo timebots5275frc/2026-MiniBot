@@ -38,8 +38,8 @@ public class DriveCommand extends Command {
     double zRotation = input.ControllerTurn();//1.0 to -1.0
     
     //Square inputs
-    xSpeed *= xSpeed;
-    zRotation *= zRotation;
+    xSpeed = xSpeed * Math.abs(xSpeed);
+    zRotation = zRotation * Math.abs(zRotation);
 
     tankDriveSubsystem.arcadeDrive(xSpeed * Constants.DriveConstants.MAX_X_SPEED, zRotation * Constants.DriveConstants.MAX_Z_ROTATION);
 
