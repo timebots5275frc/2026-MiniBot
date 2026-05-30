@@ -4,14 +4,11 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.CustomTypes.Math.Vector2;
 
 public class Input extends SubsystemBase {
   
@@ -25,13 +22,13 @@ public class Input extends SubsystemBase {
   double controllerInput = 0;
   double controllerTurn = 0;
 
- 
+  boolean isSimulation = false;
 
   public static double Throttle;
 
   public Input(XboxController xboxController) {
     controller = xboxController;
-    
+    isSimulation = RobotBase.isSimulation();
   }
 
   @Override
@@ -43,8 +40,14 @@ public class Input extends SubsystemBase {
   }
 
   void getRawControllerInput() {
-    rawControllerInput = -controller.getLeftY();
-    rawControllerTurn = -controller.getRightX();
+    if (isSimulation) {
+      rawControllerInput = -controller.getLeftY();
+      rawControllerTurn = -controller.getLeftX();
+    } else {
+      rawControllerInput = -controller.getLeftY();
+      rawControllerTurn = -controller.getRightX();
+    }
+    
   }
 
   void calculateControllerInput() {

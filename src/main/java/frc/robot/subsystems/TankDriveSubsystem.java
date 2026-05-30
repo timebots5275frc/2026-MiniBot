@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,6 +43,9 @@ public class TankDriveSubsystem extends SubsystemBase {
 		//Simulation
     private DifferentialDrivetrainSim driveSim;
 		private Field2d field2d;
+
+		private SparkMaxSim leftMotorSim;
+		private SparkMaxSim rightMotorSim;
     
 
   /** Creates a new TankDriveSubsystem. */
@@ -78,6 +83,9 @@ public class TankDriveSubsystem extends SubsystemBase {
 
   private void initSim() {
 
+		leftMotorSim = new SparkMaxSim(leftLeaderMotor, DCMotor.getNeo550(2));
+    rightMotorSim = new SparkMaxSim(rightLeaderMotor, DCMotor.getNeo550(2));
+
     LinearSystem<N2, N2, N2> drivetrainPlant = LinearSystemId.createDrivetrainVelocitySystem(
 			DCMotor.getNeo550(2),
 			Constants.DriveConstants.ROBOT_MASS,
@@ -91,7 +99,7 @@ public class TankDriveSubsystem extends SubsystemBase {
 		driveSim.setPose(new Pose2d(0,0,new Rotation2d(0)));
 		field2d = new Field2d();
 		field2d.setRobotPose(driveSim.getPose());
-
+		SmartDashboard.putData("Field", field2d);
   }
 
   /**
@@ -124,7 +132,8 @@ public class TankDriveSubsystem extends SubsystemBase {
         leftSpeed /= saturatedInput;
         rightSpeed /= saturatedInput;
       }
-      
+      SmartDashboard.putNumber("zRotation", zRotation);
+			SmartDashboard.putNumber("xSpeed", xSpeed);
       wheelDrive(leftSpeed, rightSpeed);
     }
 
@@ -135,6 +144,9 @@ public class TankDriveSubsystem extends SubsystemBase {
       //60 - converts seconds to minutes;
       //(Math.PI * Constants.DriveConstants.WHEEL_DIAMETER)) gets the wheel circumfrence, otherwise meters per rotation
       //divide by the gear ratio to convert to wheel rotations
+			SmartDashboard.putNumber("leftSpeed", leftSpeed);
+			SmartDashboard.putNumber("rightSpeed", rightSpeed);
+			
 
       double conversionFactor = (60 / (Math.PI * Constants.DriveConstants.WHEEL_DIAMETER)) * Constants.DriveConstants.GEAR_RATIO;
 
@@ -152,7 +164,17 @@ public class TankDriveSubsystem extends SubsystemBase {
 
   @Override
 	public void simulationPeriodic() {
+
+		double leftVoltage = leftMotorSim.getAppliedOutput() * RobotController.getBatteryVoltage();
+		double rightVoltage = rightMotorSim.getAppliedOutput() * RobotController.getBatteryVoltage();
+
+		driveSim.setInputs(leftVoltage, rightVoltage);
+		driveSim.update(0.02);
+
+		leftMotorSim.iterate(driveSim.getLeftVelocityMetersPerSecond() * Constants.DriveConstants.metersToRotations * 60, RobotController.getBatteryVoltage(), 0.02);
+    rightMotorSim.iterate(driveSim.getRightVelocityMetersPerSecond() * Constants.DriveConstants.metersToRotations * 60, RobotController.getBatteryVoltage(), 0.02);
 			
-		SmartDashboard.putData(field2d);
+		field2d.setRobotPose(driveSim.getPose());
+		SmartDashboard.putData("Field", field2d);
   }
 }
