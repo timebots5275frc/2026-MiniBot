@@ -42,7 +42,6 @@ public class TankDriveSubsystem extends SubsystemBase {
 
 		//Simulation
     private DifferentialDrivetrainSim driveSim;
-		private Field2d field2d;
 
 		private SparkMaxSim leftMotorSim;
 		private SparkMaxSim rightMotorSim;
@@ -97,8 +96,7 @@ public class TankDriveSubsystem extends SubsystemBase {
 
     driveSim = new DifferentialDrivetrainSim(drivetrainPlant, DCMotor.getNeo550(2), Constants.DriveConstants.GEAR_RATIO, Constants.DriveConstants.TRACK_WIDTH, Constants.DriveConstants.WHEEL_DIAMETER/2, null);
 		driveSim.setPose(new Pose2d(0,0,new Rotation2d(0)));
-		field2d = new Field2d();
-		field2d.setRobotPose(driveSim.getPose());
+		
 		//SmartDashboard.putData("Field", field2d);
   }
 
@@ -176,14 +174,8 @@ public class TankDriveSubsystem extends SubsystemBase {
 		leftMotorSim.iterate(driveSim.getLeftVelocityMetersPerSecond() * Constants.DriveConstants.metersToRotations * 60, RobotController.getBatteryVoltage(), 0.02);
     rightMotorSim.iterate(driveSim.getRightVelocityMetersPerSecond() * Constants.DriveConstants.metersToRotations * 60, RobotController.getBatteryVoltage(), 0.02);
 			
-		field2d.setRobotPose(driveSim.getPose());
+		
 
-		SmartDashboard.putNumber("SimHeadingDeg", driveSim.getHeading().getDegrees());
-		SmartDashboard.putNumber("LeftVoltage", leftVoltage);
-		SmartDashboard.putNumber("RightVoltage", rightVoltage);
-		SmartDashboard.putNumber("PoseX", driveSim.getPose().getX());
-		SmartDashboard.putNumber("PoseY", driveSim.getPose().getY());
-		SmartDashboard.putNumber("PoseRot", driveSim.getPose().getRotation().getDegrees());
 
 		SmartDashboard.putNumberArray("RobotPose", new double[]{
 				driveSim.getPose().getX(),
