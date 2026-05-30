@@ -14,11 +14,15 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -33,8 +37,10 @@ public class TankDriveSubsystem extends SubsystemBase {
     private SparkClosedLoopController leftMotorController;
     private SparkClosedLoopController rightMotorController;
 
-    private DifferentialDrivetrainSim driveSim;
 
+		//Simulation
+    private DifferentialDrivetrainSim driveSim;
+		private Field2d field2d;
     
 
   /** Creates a new TankDriveSubsystem. */
@@ -73,15 +79,19 @@ public class TankDriveSubsystem extends SubsystemBase {
   private void initSim() {
 
     LinearSystem<N2, N2, N2> drivetrainPlant = LinearSystemId.createDrivetrainVelocitySystem(
-    DCMotor.getNeo550(2),
-    Constants.DriveConstants.ROBOT_MASS,
-    Constants.DriveConstants.WHEEL_DIAMETER / 2,
-    Constants.DriveConstants.TRACK_WIDTH / 2,
-    Constants.DriveConstants.MOI,
-    Constants.DriveConstants.GEAR_RATIO
+			DCMotor.getNeo550(2),
+			Constants.DriveConstants.ROBOT_MASS,
+			Constants.DriveConstants.WHEEL_DIAMETER / 2,
+			Constants.DriveConstants.TRACK_WIDTH / 2,
+			Constants.DriveConstants.MOI,
+			Constants.DriveConstants.GEAR_RATIO
     );
 
-    driveSim = new DifferentialDrivetrainSim(null, DCMotor.getNeo550(2), Constants.DriveConstants.GEAR_RATIO, Constants.DriveConstants.TRACK_WIDTH, Constants.DriveConstants.WHEEL_DIAMETER/2, null);
+    driveSim = new DifferentialDrivetrainSim(drivetrainPlant, DCMotor.getNeo550(2), Constants.DriveConstants.GEAR_RATIO, Constants.DriveConstants.TRACK_WIDTH, Constants.DriveConstants.WHEEL_DIAMETER/2, null);
+		driveSim.setPose(new Pose2d(0,0,new Rotation2d(0)));
+		field2d = new Field2d();
+		field2d.setRobotPose(driveSim.getPose());
+
   }
 
   /**
@@ -138,5 +148,11 @@ public class TankDriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  @Override
+	public void simulationPeriodic() {
+			
+		SmartDashboard.putData(field2d);
   }
 }
