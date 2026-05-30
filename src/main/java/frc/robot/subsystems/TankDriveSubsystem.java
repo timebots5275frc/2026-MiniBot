@@ -131,8 +131,8 @@ public class TankDriveSubsystem extends SubsystemBase {
       double leftRPM = leftSpeed * conversionFactor;
       double rightRPM = rightSpeed * conversionFactor;
 
-      leftMotorController.setReference(leftRPM * Constants.DriveConstants.FOWARD, ControlType.kVelocity);
-      rightMotorController.setReference(rightRPM * Constants.DriveConstants.FOWARD, ControlType.kVelocity);
+      leftMotorController.setReference(leftRPM * Constants.DriveConstants.FORWARD, ControlType.kVelocity);
+      rightMotorController.setReference(rightRPM * Constants.DriveConstants.FORWARD, ControlType.kVelocity);
   }
 
   @Override
