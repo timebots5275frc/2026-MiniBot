@@ -41,6 +41,8 @@ public final class Constants {
     public static final double TRACK_WIDTH = 16 * MathConstants.INCH_TO_METER; //TODO: the distance between the middle of left and right wheel
     public static final double GEAR_RATIO = 10.71; //TODO: how many rotations of the motor rotate the wheel
     public static final double WHEEL_DIAMETER = 4 * MathConstants.INCH_TO_METER; //TODO:
+    public static final double ROBOT_MASS = 65;
+    public static final double MOI = 0;
     
   }
 
