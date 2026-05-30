@@ -23,7 +23,7 @@ public final class Constants {
 
   public static class DriveConstants {
     public static final PID DRIVE_PID = new PID(0,0,0); //TODO: PID TUNING
-    public static final int FOWARD = 1; //flip sign to flip foward
+    public static final int FORWARD = 1; //flip sign to flip foward
 
     public static final int LEFT_MOTOR_ID = 2; //TODO: set in phoenix tuner
     public static final int RIGHT_MOTOR_ID = 3; //TODO: same as above
