@@ -99,7 +99,7 @@ public class TankDriveSubsystem extends SubsystemBase {
 		driveSim.setPose(new Pose2d(0,0,new Rotation2d(0)));
 		field2d = new Field2d();
 		field2d.setRobotPose(driveSim.getPose());
-		SmartDashboard.putData("Field", field2d);
+		//SmartDashboard.putData("Field", field2d);
   }
 
   /**
@@ -107,35 +107,37 @@ public class TankDriveSubsystem extends SubsystemBase {
    * @param xSpeed 
    * meters per second
    * @param zRotation
-   * degrees per second, positive is Counter Clockwise
+   * radians per second, positive is Counter Clockwise
    */
     public void arcadeDrive(double xSpeed, double zRotation) {
 
-      xSpeed = Math.min(xSpeed, Constants.DriveConstants.MAX_X_SPEED);
-      xSpeed = Math.max(xSpeed, -Constants.DriveConstants.MAX_X_SPEED);
+			xSpeed = Math.min(xSpeed, Constants.DriveConstants.MAX_X_SPEED);
+			xSpeed = Math.max(xSpeed, -Constants.DriveConstants.MAX_X_SPEED);
 
-      zRotation = Math.min(zRotation, Constants.DriveConstants.MAX_Z_ROTATION);
-      zRotation = Math.max(zRotation, -Constants.DriveConstants.MAX_Z_ROTATION);
+			zRotation = Math.min(zRotation, Constants.DriveConstants.MAX_Z_ROTATION);
+			zRotation = Math.max(zRotation, -Constants.DriveConstants.MAX_Z_ROTATION);
 
-      double zRotationMetersPerSecond = Math.toRadians(zRotation) * (Constants.DriveConstants.TRACK_WIDTH / 2);
+			// Normalize both inputs to -1 to 1
+			double xSpeedNorm = xSpeed / Constants.DriveConstants.MAX_X_SPEED;
+			double zRotationNorm = zRotation / Constants.DriveConstants.MAX_Z_ROTATION;
 
-      double leftSpeed = xSpeed - zRotationMetersPerSecond;
-      double rightSpeed = xSpeed + zRotationMetersPerSecond;
+			double leftSpeed = xSpeedNorm - zRotationNorm;
+			double rightSpeed = xSpeedNorm + zRotationNorm;
 
-      double greaterInput = Math.max(Math.abs(xSpeed), Math.abs(zRotationMetersPerSecond));
-      double lesserInput = Math.min(Math.abs(xSpeed), Math.abs(zRotationMetersPerSecond));
-      if (greaterInput == 0.0) {
-        leftSpeed = 0;
-        rightSpeed = 0;
-      } else {
-        double saturatedInput = (greaterInput + lesserInput) / greaterInput;
-        leftSpeed /= saturatedInput;
-        rightSpeed /= saturatedInput;
-      }
-      SmartDashboard.putNumber("zRotation", zRotation);
-			SmartDashboard.putNumber("xSpeed", xSpeed);
-      wheelDrive(leftSpeed, rightSpeed);
-    }
+			double greaterInput = Math.max(Math.abs(xSpeedNorm), Math.abs(zRotationNorm));
+			double lesserInput = Math.min(Math.abs(xSpeedNorm), Math.abs(zRotationNorm));
+			if (greaterInput == 0.0) {
+					leftSpeed = 0;
+					rightSpeed = 0;
+			} else {
+					double saturatedInput = (greaterInput + lesserInput) / greaterInput;
+					leftSpeed /= saturatedInput;
+					rightSpeed /= saturatedInput;
+			}
+
+			// leftSpeed and rightSpeed are now -1 to 1, scale back to m/s
+			wheelDrive(leftSpeed * Constants.DriveConstants.MAX_X_SPEED, rightSpeed * Constants.DriveConstants.MAX_X_SPEED);
+	}
 
    /**
  * meters per second
@@ -175,6 +177,18 @@ public class TankDriveSubsystem extends SubsystemBase {
     rightMotorSim.iterate(driveSim.getRightVelocityMetersPerSecond() * Constants.DriveConstants.metersToRotations * 60, RobotController.getBatteryVoltage(), 0.02);
 			
 		field2d.setRobotPose(driveSim.getPose());
-		SmartDashboard.putData("Field", field2d);
+
+		SmartDashboard.putNumber("SimHeadingDeg", driveSim.getHeading().getDegrees());
+		SmartDashboard.putNumber("LeftVoltage", leftVoltage);
+		SmartDashboard.putNumber("RightVoltage", rightVoltage);
+		SmartDashboard.putNumber("PoseX", driveSim.getPose().getX());
+		SmartDashboard.putNumber("PoseY", driveSim.getPose().getY());
+		SmartDashboard.putNumber("PoseRot", driveSim.getPose().getRotation().getDegrees());
+
+		SmartDashboard.putNumberArray("RobotPose", new double[]{
+				driveSim.getPose().getX(),
+				driveSim.getPose().getY(),
+				driveSim.getPose().getRotation().getRadians() // try Radians() if Degrees() doesn't work
+		});
   }
 }

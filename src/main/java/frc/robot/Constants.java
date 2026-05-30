@@ -35,7 +35,7 @@ public final class Constants {
 
 
     public static final double MAX_X_SPEED = 2; // meters per second
-    public static final double MAX_Z_ROTATION = 360; // degrees per second
+    public static final double MAX_Z_ROTATION = Math.toRadians(180); // radians per second
 
 
     public static final double TRACK_WIDTH = 16 * MathConstants.INCH_TO_METER; //TODO: the distance between the middle of left and right wheel
