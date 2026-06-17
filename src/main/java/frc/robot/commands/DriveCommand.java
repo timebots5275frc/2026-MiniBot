@@ -17,6 +17,9 @@ public class DriveCommand extends Command {
   private Input input;
   private TankDriveSubsystem tankDriveSubsystem;
 
+  double xSpeed; 
+  double zRotation;
+
   /** Creates a new DriveCommand. */
   public DriveCommand(Input input, TankDriveSubsystem tankDriveSubsystem) {
     this.tankDriveSubsystem = tankDriveSubsystem;
@@ -34,8 +37,8 @@ public class DriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xSpeed = input.ControllerInput(); //1.0 to -1.0
-    double zRotation = input.ControllerTurn();//1.0 to -1.0
+    xSpeed = input.ControllerInput(); //1.0 to -1.0
+    zRotation = input.ControllerTurn();//1.0 to -1.0
     
     //Square inputs
     xSpeed = xSpeed * Math.abs(xSpeed);
