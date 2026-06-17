@@ -14,9 +14,11 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.CustomTypes.PID;
 
 public class TankDriveSubsystem extends SubsystemBase {
 
@@ -117,10 +119,48 @@ public class TankDriveSubsystem extends SubsystemBase {
       rightMotorController.setReference(rightRPM * Constants.DriveConstants.FORWARD, ControlType.kVelocity);
   }
 
+  private void pushPIDToSmartDashboard() {
+    PID pid = Constants.DriveConstants.DRIVE_PID;
+    SmartDashboard.putNumber("Drive/P", pid.p);
+    SmartDashboard.putNumber("Drive/I", pid.i);
+    SmartDashboard.putNumber("Drive/D", pid.d);
+    SmartDashboard.putNumber("Drive/kS", pid.kS);
+  }
+
+  private void setPID(double p, double i, double d, double kS) {
+
+    if (p == leftLeaderMotor.configAccessor.closedLoop.getP() && i == leftLeaderMotor.configAccessor.closedLoop.getI() && d ==  leftLeaderMotor.configAccessor.closedLoop.getD() && kS == leftLeaderMotor.configAccessor.closedLoop.getFF()) {
+      return; // return if there is no change in pid
+    }
+
+    PID pid = new PID(p, i, d, kS);
+    pid.setStallLimit(Constants.DriveConstants.DRIVE_STALL_LIMIT);
+    pid.setFreeLimit(Constants.DriveConstants.DRIVE_FREE_LIMIT);
+    pid.setSparkMaxPID(leftLeaderMotor);  
+    pid.setSparkMaxPID(rightLeaderMotor);
+  }
+
+  private void updatePID() {
+    double p  = SmartDashboard.getNumber("Drive/P",  Constants.DriveConstants.DRIVE_PID.p);
+    double i  = SmartDashboard.getNumber("Drive/I",  Constants.DriveConstants.DRIVE_PID.i);
+    double d  = SmartDashboard.getNumber("Drive/D",  Constants.DriveConstants.DRIVE_PID.d);
+    double kS = SmartDashboard.getNumber("Drive/kS", Constants.DriveConstants.DRIVE_PID.kS);
+
+    
+    setPID(p, i, d, kS);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("right rpm", rightLeaderMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("left rpm", leftLeaderMotor.getEncoder().getVelocity());
+
+    if (RobotState.isTest()) {
+      pushPIDToSmartDashboard();
+      updatePID();
+    }
   }
+
+  
 }
