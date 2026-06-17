@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.CustomTypes.PID;
 
 /**
@@ -22,8 +23,8 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final PID DRIVE_PID = new PID(0,0,0); //TODO: PID TUNING
-    public static final int FORWARD = 1; //flip sign to flip foward
+    public static final PID DRIVE_PID = new PID(0.00055,0,0.00004); //TODO: PID TUNING
+    public static final int FORWARD = -1; //flip sign to flip foward
 
     public static final int LEFT_MOTOR_ID = 2; //TODO: set in phoenix tuner
     public static final int RIGHT_MOTOR_ID = 3; //TODO: same as above
@@ -38,9 +39,11 @@ public final class Constants {
     public static final double MAX_Z_ROTATION = 180; // degrees per second
 
 
-    public static final double TRACK_WIDTH = 16 * MathConstants.INCH_TO_METER; //TODO: the distance between the middle of left and right wheel
+    public static final double TRACK_WIDTH = 14.5 * MathConstants.INCH_TO_METER; //TODO: the distance between the middle of left and right wheel
     public static final double GEAR_RATIO = 10.71; //TODO: how many rotations of the motor rotate the wheel
-    public static final double WHEEL_DIAMETER = 4 * MathConstants.INCH_TO_METER; //TODO:
+    public static final double WHEEL_DIAMETER = 6 * MathConstants.INCH_TO_METER; //TODO:
+
+   
     
   }
 

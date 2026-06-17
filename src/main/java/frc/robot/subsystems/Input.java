@@ -9,6 +9,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.CustomTypes.Math.Vector2;
@@ -44,12 +45,15 @@ public class Input extends SubsystemBase {
 
   void getRawControllerInput() {
     rawControllerInput = -controller.getLeftY();
+    
     rawControllerTurn = -controller.getRightX();
   }
 
   void calculateControllerInput() {
     controllerInput = calculateInputWithDeadzone(rawControllerInput, Constants.ControllerConstants.DEADZONE_DRIVE);
     controllerTurn = calculateInputWithDeadzone(rawControllerTurn, Constants.ControllerConstants.DEADZONE_STEER);
+  
+   
   }
 
 
@@ -78,7 +82,10 @@ public class Input extends SubsystemBase {
     controller.setRumble(rumbleType, Throttle);
   }
 
-  public double ControllerInput() {return controllerInput; }
+  public double ControllerInput() {
+    
+    return controllerInput; 
+  }
   public double ControllerTurn() {return controllerTurn; }
 
   public double calculateInputWithDeadzone(double input, double deadZone) {

@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -93,7 +94,7 @@ public class TankDriveSubsystem extends SubsystemBase {
         rightSpeed /= saturatedInput;
       }
       
-      wheelDrive(leftSpeed, rightSpeed);
+      wheelDrive(leftSpeed * -1, rightSpeed);
     }
 
    /**
@@ -109,6 +110,9 @@ public class TankDriveSubsystem extends SubsystemBase {
       double leftRPM = leftSpeed * conversionFactor;
       double rightRPM = rightSpeed * conversionFactor;
 
+      SmartDashboard.putNumber("right rpm goal", rightRPM);
+     SmartDashboard.putNumber("left rpm goal", leftRPM);
+
       leftMotorController.setReference(leftRPM * Constants.DriveConstants.FORWARD, ControlType.kVelocity);
       rightMotorController.setReference(rightRPM * Constants.DriveConstants.FORWARD, ControlType.kVelocity);
   }
@@ -116,5 +120,7 @@ public class TankDriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("right rpm", rightLeaderMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("left rpm", leftLeaderMotor.getEncoder().getVelocity());
   }
 }

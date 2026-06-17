@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
@@ -17,12 +18,16 @@ public class DriveCommand extends Command {
   private Input input;
   private TankDriveSubsystem tankDriveSubsystem;
 
+  private double xSpeed;
+  private double zRotation;
+
   /** Creates a new DriveCommand. */
   public DriveCommand(Input input, TankDriveSubsystem tankDriveSubsystem) {
     this.tankDriveSubsystem = tankDriveSubsystem;
     this.input = input;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(tankDriveSubsystem);
+    addRequirements(input);
   }
 
   // Called when the command is initially scheduled.
@@ -34,8 +39,8 @@ public class DriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xSpeed = input.ControllerInput(); //1.0 to -1.0
-    double zRotation = input.ControllerTurn();//1.0 to -1.0
+    xSpeed = input.ControllerInput(); //1.0 to -1.0
+    zRotation = input.ControllerTurn();//1.0 to -1.0
     
     //Square inputs
     xSpeed = xSpeed * Math.abs(xSpeed);
