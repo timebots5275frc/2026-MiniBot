@@ -113,8 +113,11 @@ public class TankDriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("right rpm goal", rightRPM);
      SmartDashboard.putNumber("left rpm goal", leftRPM);
 
-      leftMotorController.setReference(leftRPM * Constants.DriveConstants.FORWARD, ControlType.kVelocity);
-      rightMotorController.setReference(rightRPM * Constants.DriveConstants.FORWARD, ControlType.kVelocity);
+      // rightLeaderMotor.set(rightRPM);
+      // leftLeaderMotor.set(leftRPM);
+      //TODO: rpm shot to moon, do not run
+      // leftMotorController.setReference(leftRPM * Constants.DriveConstants.FORWARD, ControlType.kVelocity);
+      // rightMotorController.setReference(rightRPM * Constants.DriveConstants.FORWARD, ControlType.kVelocity);
   }
 
   @Override
